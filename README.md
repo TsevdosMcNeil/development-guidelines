@@ -10,7 +10,7 @@ These guidelines should be followed when starting new projects and when making s
 
 ### WordPress
 
-📄 [WordPress Development Guidelines](wordpress/development-guidelines.md)
+📄 [WordPress Development Guidelines](WORDPRESS-DEVELOPMENT-GUIDELINES.md)
 
 Guidelines for developing and maintaining WordPress projects, including:
 
