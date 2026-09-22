@@ -148,7 +148,144 @@ Otherwise, the next deployment may overwrite it.
 
 ------------------------------------------------------------------------
 
-## 3. Project Documentation
+## 3. Docker and Local Development
+
+TM WordPress projects are normally configured to use **Docker** for local development and for the staging environments hosted on the TM Studio server.
+
+Using Docker allows us to keep the development environments consistent between developers and staging, particularly for:
+
+* PHP versions
+* MySQL/MariaDB versions
+* Node.js versions
+* Composer
+* PHP extensions
+* server configuration
+* other project dependencies
+
+For this reason, **using the existing Docker environment for local development is strongly recommended**.
+
+### Repository structure
+
+The repository may contain Docker configuration and other development infrastructure at its root level, while the actual WordPress installation lives inside a directory called:
+
+```text
+wordpress/
+```
+
+A typical project may look something like:
+
+```text
+project/
+├── docker-compose.yml
+├── .env.example
+├── README.md
+├── docker/
+│   └── ...
+│
+└── wordpress/
+    ├── wp-admin/
+    ├── wp-content/
+    │   ├── plugins/
+    │   └── themes/
+    ├── wp-includes/
+    └── ...
+```
+
+The exact Docker configuration may vary between projects, so always check the project's `README.md` before starting development.
+
+### If you use Docker
+
+If you are comfortable working with Docker, use the Docker configuration supplied with the project.
+
+This is the preferred approach because it helps ensure that your local environment matches the versions and configuration used by the project and staging server.
+
+Before changing PHP, Node.js, database or other dependency versions, check the existing project configuration and consider whether the same change will also be required on staging and production.
+
+Do not update versions locally without considering compatibility with the environments where the website will eventually run.
+
+### If you do not use Docker
+
+Knowledge of Docker is useful but is **not required in order to work on the WordPress codebase**.
+
+If you prefer to use another local development environment, such as MAMP or a native PHP/MySQL setup, you can work directly with the WordPress installation inside:
+
+```text
+wordpress/
+```
+
+For example, theme development will normally happen somewhere inside:
+
+```text
+wordpress/wp-content/themes/
+```
+
+and custom plugin development inside:
+
+```text
+wordpress/wp-content/plugins/
+```
+
+However, if you are not using Docker, it is your responsibility to make sure your local environment uses versions compatible with the project.
+
+In particular, check:
+
+* PHP version
+* required PHP extensions
+* MySQL/MariaDB compatibility
+* Node.js version
+* npm/package dependencies
+* Composer dependencies
+
+A project working correctly with a different PHP or Node.js version on your machine does **not necessarily mean it will work correctly on staging or production**.
+
+This is one of the main reasons Docker is strongly recommended.
+
+### Do not remove or replace the Docker configuration
+
+Even if you choose not to use Docker locally, **do not remove, replace or ignore the project's Docker configuration**.
+
+The Docker files are part of the project and may be required by:
+
+* other developers
+* the TM Studio staging server
+* future maintenance
+* debugging
+* deployment workflows
+
+Changes to Docker configuration should be treated like any other infrastructure change and committed to the repository.
+
+If you believe the Docker configuration needs to be changed, please discuss the change with the team first.
+
+### Dependency versions
+
+Avoid unnecessarily changing dependency versions simply because newer versions are available.
+
+For example, do not automatically change:
+
+```text
+PHP 8.3 → PHP 8.4
+Node 20 → Node 24
+MySQL 8 → another database/version
+```
+
+without checking compatibility with:
+
+* WordPress
+* the theme
+* plugins
+* Composer packages
+* npm packages
+* staging
+* production hosting
+
+Where possible, local development, staging and production should use compatible versions of the project's main dependencies.
+
+> **The goal is reproducibility:** another developer should be able to clone the repository, start the documented environment and work with the same core software versions used by the rest of the team.
+
+
+------------------------------------------------------------------------
+
+## 4. Project Documentation
 
 Every repository should contain a useful `README.md`.
 
@@ -171,7 +308,7 @@ The aim is simple:
 
 ------------------------------------------------------------------------
 
-## 4. WordPress Standards
+## 5. WordPress Standards
 
 Use WordPress's standard APIs and functions wherever possible.
 
@@ -233,7 +370,7 @@ there is a specific reason.
 
 ------------------------------------------------------------------------
 
-## 5. Gutenberg and Editable Content
+## 6. Gutenberg and Editable Content
 
 **Gutenberg should be the default approach for editable page content.**
 
@@ -267,7 +404,7 @@ quicker.
 
 ------------------------------------------------------------------------
 
-## 6. ACF
+## 7. ACF
 
 When using **Advanced Custom Fields (ACF)**, field definitions must be
 version-controlled.
@@ -301,7 +438,7 @@ projects, in appropriately structured include files/classes.
 
 ------------------------------------------------------------------------
 
-## 7. HTML and Semantic Structure
+## 8. HTML and Semantic Structure
 
 Keep HTML semantic and valid.
 
@@ -355,7 +492,7 @@ interactive element is appropriate.
 
 ------------------------------------------------------------------------
 
-## 8. Images and Media
+## 9. Images and Media
 
 Use standard WordPress image functions rather than manually constructing
 image markup.
@@ -414,7 +551,7 @@ WordPress image size is appropriate.
 
 ------------------------------------------------------------------------
 
-## 9. Accessibility
+## 10. Accessibility
 
 Accessibility should be considered during development, not added
 afterwards.
@@ -452,7 +589,7 @@ Do not add ARIA attributes simply for the sake of adding them.
 
 ------------------------------------------------------------------------
 
-## 10. CSS
+## 11. CSS
 
 Keep all CSS source files in Git.
 
@@ -483,7 +620,7 @@ immediately above or below it.
 
 ------------------------------------------------------------------------
 
-## 11. JavaScript
+## 12. JavaScript
 
 Keep all JavaScript source files in Git.
 
@@ -520,7 +657,7 @@ Do not rely on packages that exist only on one developer's computer.
 
 ------------------------------------------------------------------------
 
-## 12. Security
+## 13. Security
 
 Never commit:
 
@@ -563,7 +700,7 @@ Do not rely only on frontend restrictions.
 
 ------------------------------------------------------------------------
 
-## 13. Performance
+## 14. Performance
 
 Performance should be considered while building components.
 
@@ -603,7 +740,7 @@ Before adding a plugin, consider:
 
 ------------------------------------------------------------------------
 
-## 14. Plugins and Third-Party Dependencies
+## 15. Plugins and Third-Party Dependencies
 
 Before adding a plugin or library, consider its long-term maintenance.
 
@@ -621,7 +758,7 @@ Never edit a plugin's source code directly to customise its behaviour.
 
 ------------------------------------------------------------------------
 
-## 15. Browser and Responsive Testing
+## 16. Browser and Responsive Testing
 
 Before considering frontend work complete, test it across relevant
 browsers and viewport sizes.
@@ -663,7 +800,7 @@ There should be no accidental horizontal page scrolling.
 
 ------------------------------------------------------------------------
 
-## 16. Forms
+## 17. Forms
 
 All forms should:
 
@@ -682,7 +819,7 @@ successful frontend submission means the email arrived.
 
 ------------------------------------------------------------------------
 
-## 17. Code Quality and Maintainability
+## 18. Code Quality and Maintainability
 
 Write code for the next developer, not only for the current task.
 
@@ -707,7 +844,7 @@ unusual client requirement, document it.
 
 ------------------------------------------------------------------------
 
-## 18. Deployment
+## 19. Deployment
 
 A deployment should come from version-controlled code.
 
@@ -749,7 +886,7 @@ Check:
 
 ------------------------------------------------------------------------
 
-## 19. Pre-Delivery Checklist
+## 20. Pre-Delivery Checklist
 
 Before marking a development task or project as complete, check the
 following.
@@ -817,7 +954,7 @@ following.
 
 ------------------------------------------------------------------------
 
-## 20. When Unsure
+## 21. When Unsure
 
 If you are unsure about how something should be implemented, ask before
 creating a completely custom solution.
